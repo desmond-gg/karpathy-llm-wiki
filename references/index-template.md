@@ -1,18 +1,18 @@
-# Knowledge Base Index
+# Chip Knowledge Base Index
 
-## {topic-name}
+## {domain/path}
 
-{One-line description of this topic.}
+{One-line description of this domain or directory.}
 
-| Article | Summary | Updated |
-|---------|---------|---------|
-| [{Article Title}]({topic-name}/{article}.md) | {One-line summary} | {YYYY-MM-DD} |
-| [{Archived Article}]({topic-name}/{archived}.md) | [Archived] {One-line summary} | {YYYY-MM-DD} |
+| Page | Type | Applies To / Version | Summary | Updated |
+|------|------|----------------------|---------|---------|
+| [[{Page Title}]] | {type} | {version or applies_to summary} | {One-line summary} | {YYYY-MM-DD} |
+| [[{Archived Page Title}]] | archive | {scope} | [Archived] {One-line summary} | {YYYY-MM-DD} |
 
-## {another-topic}
+## {another domain/path}
 
-{One-line description of this topic.}
+{One-line description of this domain or directory.}
 
-| Article | Summary | Updated |
-|---------|---------|---------|
-| [{Article Title}]({another-topic}/{article}.md) | {One-line summary} | {YYYY-MM-DD} |
+| Page | Type | Applies To / Version | Summary | Updated |
+|------|------|----------------------|---------|---------|
+| [[{Page Title}]] | {type} | {version or applies_to summary} | {One-line summary} | {YYYY-MM-DD} |
