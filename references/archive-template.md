@@ -1,21 +1,39 @@
+---
+title: "{Title}"
+type: "archive"
+domain:
+  - "{architecture | microarchitecture | specs | protocols | ip | gpu | memory-system | verification | glossary}"
+tags:
+  - "wiki"
+  - "archive"
+aliases: []
+version: "{version or empty string}"
+version_status: "not-applicable"
+supersedes: []
+superseded_by: []
+applies_to: []
+source_authority:
+  - "unknown"
+source_language:
+  - "{zh | en | mixed | unknown}"
+updated: {YYYY-MM-DD}
+archived: {YYYY-MM-DD}
+---
+
 # {Title}
 
-> Sources: [{Cited Article 1}](article1.md); [{Cited Article 2}](../other-topic/article2.md)
-{Paths must be relative to this file: same-topic = filename only, cross-topic = ../other-topic/filename.md}
-> Archived: {YYYY-MM-DD}
+> Sources: [[{Cited Wiki Page 1}]]; [[{Cited Wiki Page 2}]]
 
 ## Overview
 
-{One paragraph summarizing the query and key findings.}
+{One paragraph summarizing the archived question and key findings. Include version/applicability scope where relevant.}
 
-## {Body Sections}
+## Answer
 
-{The synthesized answer, lightly edited for wiki context. This page is a point-in-time snapshot; it will not be cascade-updated when source articles change.}
-
-{OPTIONAL — include this section only when cross-references exist:}
+{The synthesized answer, lightly edited for wiki context. This page is a point-in-time snapshot and is not cascade-updated when source pages change.}
 
 ## See Also
 
-{Cross-references to related wiki articles. Use relative links:
-- Same topic: [Other Article](other-article.md)
-- Different topic: [Other Article](../other-topic/other-article.md)}
+{Use Obsidian wikilinks for related wiki pages, for example:
+- [[Related Concept]]
+- [[Relevant Spec Version]]}
