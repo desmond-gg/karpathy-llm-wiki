@@ -1,97 +1,246 @@
 ---
-name: karpathy-llm-wiki
-description: "Use when building or maintaining a personal LLM-powered knowledge base. Triggers: ingesting sources into a wiki, querying wiki knowledge, linting wiki quality, 'add to wiki', 'what do I know about', or any mention of 'LLM wiki' or 'Karpathy wiki'."
+name: chip-obsidian-wiki
+description: "Use when building or maintaining an Obsidian knowledge base for digital chip frontend/backend design, CPU/GPU/DPU/TPU architecture, ARM/x86/AMD-related IP, protocols, specs, and system engineering. Triggers: ingesting chip/design sources, maintaining spec versions, querying CPU/GPU/DPU/TPU/IP knowledge, linting Obsidian wiki quality, or updating technical glossary/version pages."
 ---
 
-# Karpathy LLM Wiki
+# Chip Obsidian Wiki
 
-Build and maintain a personal knowledge base using LLMs. You manage two directories: `raw/` (immutable source material) and `wiki/` (compiled knowledge articles). Sources go into raw/, you compile them into wiki articles, and the wiki compounds over time.
+Build and maintain a professional Obsidian knowledge base for digital chip frontend/backend design, CPU/GPU/DPU/TPU architecture, ARM/x86/AMD-related IP, protocols, specs, and system engineering. The agent maintains compiled wiki pages; the user curates sources, reviews results, and asks engineering questions.
 
-Core ideas from Karpathy:
-- "The LLM writes and maintains the wiki; the human reads and asks questions."
-- "The wiki is a persistent, compounding artifact."
+Core principles:
+- The wiki is a persistent, compounding engineering artifact.
+- Raw material is immutable source evidence; wiki pages are maintained synthesis.
+- Claims about protocols, specs, architecture behavior, IP behavior, and implementation constraints must carry version or applicability scope.
+- English normative definitions may be preserved when useful, with a Chinese explanation or translation.
 
 ## Architecture
 
-Three layers, all under the user's project root:
+Three layers live under the user's project root:
 
-**raw/** — Immutable source material. You read, never modify. Organized by topic subdirectories (e.g., `raw/machine-learning/`).
+**raw/** — Flat source-material directory. Raw files are not organized into topic subdirectories. The agent reads raw files but does not rewrite existing raw source text except when creating a new raw file during ingest. Users may also create raw files directly through Obsidian Web Clipper.
 
-**wiki/** — Compiled knowledge articles. You have full ownership. Organized by topic subdirectories, one level only: `wiki/<topic>/<article>.md`. Contains two special files:
-- `wiki/index.md` — Global index. One row per article, grouped by topic, with link + summary + Updated date.
+**wiki/** — Compiled Obsidian knowledge pages. The agent owns this layer. Deep directory structures are allowed when they improve navigation, for example:
+- `wiki/architecture/cpu/arm/`
+- `wiki/architecture/cpu/x86/`
+- `wiki/architecture/gpu/`
+- `wiki/architecture/dpu/`
+- `wiki/architecture/tpu/`
+- `wiki/microarchitecture/cache/`
+- `wiki/frontend-design/rtl/`
+- `wiki/frontend-design/clock-reset-power/`
+- `wiki/backend-design/floorplan/`
+- `wiki/backend-design/timing-closure/`
+- `wiki/dft/scan-atpg/`
+- `wiki/specs/amba-chi/`
+- `wiki/protocols/pcie/`
+- `wiki/ip/arm/`
+- `wiki/ip/amd/`
+- `wiki/memory-system/`
+- `wiki/verification/`
+- `wiki/glossary/`
+- `wiki/design-notes/`
+- `wiki/archive/`
+
+`wiki/` contains two special files:
+- `wiki/index.md` — Global index grouped by domain/path, with Obsidian wiki links, page type, applicability/version, summary, and Updated date.
 - `wiki/log.md` — Append-only operation log.
 
-**SKILL.md** (this file) — Schema layer. Defines structure and workflow rules.
+**SKILL.md** — Schema layer. Defines structure, metadata, and workflows.
 
-Templates live in `references/` relative to this file. Read them when you need the exact format for raw files, articles, archive pages, or the index.
+Templates live in `references/` relative to this file. Read them when the exact raw, article, archive, or index format is needed.
 
 ### Initialization
 
 Triggers only on the first Ingest. Check whether `raw/` and `wiki/` exist. Create only what is missing; never overwrite existing files:
 
-- `raw/` directory (with `.gitkeep`)
-- `wiki/` directory (with `.gitkeep`)
-- `wiki/index.md` — heading `# Knowledge Base Index`, empty body
+- `raw/` directory with `.gitkeep`
+- `wiki/` directory with `.gitkeep`
+- `wiki/index.md` — heading `# Chip Knowledge Base Index`, empty body
 - `wiki/log.md` — heading `# Wiki Log`, empty body
+- `wiki/glossary/` directory with `.gitkeep`
 
 If Query or Lint cannot find the wiki structure, tell the user: "Run an ingest first to initialize the wiki." Do not auto-create.
 
 ---
 
+## Metadata Schema
+
+All wiki knowledge pages use Obsidian-compatible YAML frontmatter for Dataview queries.
+
+Required fields:
+
+```yaml
+---
+title: "{Page Title}"
+type: "concept | spec-family | spec-version | protocol | ip | architecture | microarchitecture | gpu | glossary | comparison | design-note | archive"
+domain:
+  - "cpu | gpu | dpu | tpu | architecture | microarchitecture | frontend-design | backend-design | dft | physical-design | specs | protocols | ip | memory-system | verification | glossary"
+tags:
+  - "wiki"
+aliases: []
+version: ""
+version_status: "draft | active | deprecated | superseded | unknown | not-applicable"
+supersedes: []
+superseded_by: []
+applies_to: []
+source_authority:
+  - "official-spec | vendor-doc | paper | book | blog | forum | internal-note | unknown"
+source_language:
+  - "en | zh | mixed | unknown"
+updated: YYYY-MM-DD
+---
+```
+
+Use empty arrays or `not-applicable` when a field is not relevant. Do not omit required fields.
+
+Raw source files created by the agent use Obsidian properties, not the wiki schema:
+
+```yaml
+---
+title: "{Source Title}"
+source: "{URL or origin description}"
+author:
+  - "[[Author Or Organization]]"
+published: YYYY-MM-DD
+created: YYYY-MM-DD
+description: ""
+tags:
+  - "raw"
+---
+```
+
+If the source published date is unknown, use `published: Unknown`. `created` is the date the Obsidian raw note is created.
+
+---
+
+## Linking Conventions
+
+- Wiki knowledge pages use Obsidian wikilinks for internal knowledge links: `[[PCIe No Snoop]]`, `[[AMBA CHI Issue E]]`, `[[Request Node|RN]]`.
+- Raw/source references use standard markdown relative links so file provenance remains explicit. Compute the path from the current wiki file to the flat `raw/` file, for example `[raw source](../../../raw/pci-e-no-snoop.md)` from `wiki/specs/amba-chi/issue-e.md`.
+- In conversation output, cite project-root-relative markdown paths, for example `[PCIe No Snoop](wiki/protocols/pcie/no-snoop.md)`.
+- In `wiki/index.md`, use Obsidian wikilinks for article references and markdown links only for raw/source paths when needed.
+
+---
+
 ## Ingest
 
-Fetch a source into raw/, then compile it into wiki/. Always both steps, no exceptions.
+Fetch or locate a source in `raw/`, then compile it into `wiki/`. Ingesting a source usually affects multiple wiki pages.
 
-### Fetch (raw/)
+### Fetch or Locate Raw Source
 
-1. Get the source content using whatever web or file tools your environment provides. If nothing can reach the source, ask the user to paste it directly.
+1. If the user provides an existing raw note, read it from `raw/`.
+2. If the user provides pasted text or a local file, create a new flat raw note at `raw/YYYY-MM-DD-descriptive-slug.md`.
+3. If the user provides a URL and no local raw note exists, fetch the content using available tools and create a flat raw note at `raw/YYYY-MM-DD-descriptive-slug.md`.
+4. Do not create topic subdirectories under `raw/`.
+5. Use `references/raw-template.md` exactly for newly created raw notes.
+6. Preserve original source text. Clean formatting noise only when creating the raw note. Do not rewrite opinions, definitions, or spec language.
 
-2. Pick a topic directory. Check existing `raw/` subdirectories first; reuse one if the topic is close enough. Create a new subdirectory only for genuinely distinct topics.
+URL ingest through Chrome + Obsidian Web Clipper is a future workflow and is tracked in `todo.md`; until implemented, use available non-browser fetch/file tools or ask the user to provide the clipped raw note.
 
-3. Save as `raw/<topic>/YYYY-MM-DD-descriptive-slug.md`.
-   - Slug from source title, kebab-case, max 60 characters.
-   - Published date unknown → omit the date prefix from the file name (e.g., `descriptive-slug.md`). The metadata Published field still appears; set it to `Unknown`.
-   - If a file with the same name already exists, append a numeric suffix (e.g., `descriptive-slug-2.md`).
-   - Include metadata header: source URL, collected date, published date.
-   - Preserve original text. Clean formatting noise. Do not rewrite opinions.
+### Compile into Wiki
 
-   See `references/raw-template.md` for the exact format.
+Determine where the source belongs:
 
-### Compile (wiki/)
+- **Existing concept or entity** → Merge into the relevant article and update affected sections.
+- **New concept/entity** → Create a new page in the most relevant deep directory.
+- **Protocol or spec family** → Maintain a family page plus separate version pages.
+- **Specific spec version** → Create or update a `spec-version` page under the family directory.
+- **Cross-domain material** → Place the primary page in the strongest domain and add wikilinks to related pages elsewhere.
 
-Determine where the new content belongs:
+Suggested directory anchors:
+- CPU architecture: `wiki/architecture/cpu/arm/`, `wiki/architecture/cpu/x86/`
+- GPU architecture: `wiki/architecture/gpu/`
+- DPU/TPU architecture: `wiki/architecture/dpu/`, `wiki/architecture/tpu/`
+- Microarchitecture: `wiki/microarchitecture/<area>/`
+- Frontend design: `wiki/frontend-design/rtl/`, `wiki/frontend-design/clock-reset-power/`
+- Backend design: `wiki/backend-design/floorplan/`, `wiki/backend-design/timing-closure/`
+- DFT/test: `wiki/dft/`
+- Specs/protocols: `wiki/specs/<family>/` or `wiki/protocols/<protocol>/`
+- IP blocks: `wiki/ip/<vendor-or-family>/<ip-name>/`
+- Memory system: `wiki/memory-system/`
+- Verification/system engineering: `wiki/verification/`
+- Glossary: `wiki/glossary/`
 
-- **Same core thesis as existing article** → Merge into that article. Add the new source to Sources/Raw. Update affected sections.
-- **New concept** → Create a new article in the most relevant topic directory. Name the file after the concept, not the raw file.
-- **Spans multiple topics** → Place in the most relevant directory. Add See Also cross-references to related articles elsewhere.
+When merging, check for factual conflicts. If sources disagree, annotate the disagreement with source authority, date, version, and applicability.
 
-These are not mutually exclusive. A single source may warrant merging into one article while also creating a separate article for a distinct concept it introduces. In all cases, check for factual conflicts: if the new source contradicts existing content, annotate the disagreement with source attribution. When merging, note the conflict within the merged article. When the conflicting content lives in separate articles, note it in both and cross-link them.
+### Spec and Protocol Versions
 
-See `references/article-template.md` for article format. Key points:
-- Sources field: author, organization, or publication name + date, semicolon-separated.
-- Raw field: markdown links to raw/ files, semicolon-separated.
-- Relative paths from `wiki/<topic>/` use `../../raw/<topic>/<file>.md` (two levels up to project root).
+Use the family + version model:
+
+- Family page: `wiki/specs/<spec-family>/index.md`
+- Version page: `wiki/specs/<spec-family>/<version-slug>.md`
+
+Example:
+- `wiki/specs/amba-chi/index.md` — AMBA CHI family overview, version matrix, terminology, links to versions.
+- `wiki/specs/amba-chi/issue-e.md` — AMBA CHI Issue E behavior, definitions, constraints, and differences.
+
+Rules:
+- A version-specific claim must state its `version` and `applies_to` scope.
+- The family page summarizes stable concepts and version differences; it must not hide version-dependent behavior.
+- When adding a new version page, update the family page's version matrix and cross-links.
+- Use `supersedes` and `superseded_by` when the relationship is known.
+
+### English Original + Chinese Explanation
+
+For English source material:
+
+- Preserve short normative definitions, protocol requirements, and precise spec wording when useful.
+- Add a Chinese translation or explanation directly below the original.
+- Do not copy long passages from copyrighted sources; quote only short necessary snippets and otherwise paraphrase.
+- Keep technical English terms when they are industry-standard, and map them through the glossary.
+
+Recommended format:
+
+```md
+> Original: A Request Node issues requests into the coherent interconnect.
+> 中文：请求节点向一致性互连发起请求。
+
+说明：这里的 Request Node 是协议角色，不等同于 CPU core 本身；具体实现中可能由 cluster、DMA 或其他 master 侧组件承担。
+```
+
+### Engineering Synthesis
+
+Wiki pages should translate source material into engineering value. Prefer sections such as:
+
+- `Overview`
+- `Terminology`
+- `Version Scope`
+- `Original / 中文说明`
+- `Architecture / Protocol Details`
+- `RTL / Microarchitecture Mapping`
+- `Frontend Design Notes`
+- `Backend / Physical Design Notes`
+- `DFT / Test Notes`
+- `Implementation Implications`
+- `PPA / Timing / Area Notes`
+- `Verification / Integration Notes`
+- `Version Differences`
+- `Open Questions`
+- `Sources`
+- `See Also`
+
+Omit sections that do not apply.
 
 ### Cascade Updates
 
-After the primary article, check for ripple effects:
+After updating the primary page:
 
-1. Scan articles in the same topic directory for content affected by the new source.
-2. Scan `wiki/index.md` entries in other topics for articles covering related concepts.
-3. Update every article whose content is materially affected. Each updated file gets its Updated date refreshed.
+1. Update related pages linked from the article.
+2. Search `wiki/index.md` for related pages in other domains.
+3. For spec-version changes, update the spec-family page.
+4. For new or changed terminology, update relevant `wiki/glossary/` pages.
+5. Refresh `updated` in every wiki page whose knowledge content changed.
 
-Archive pages are never cascade-updated (they are point-in-time snapshots).
+Archive pages are point-in-time snapshots and are not cascade-updated.
 
 ### Post-Ingest
 
-Update `wiki/index.md`: add or update entries for every touched article. When adding a new topic section, include a one-line description. The Updated date reflects when the article's knowledge content last changed, not the file system timestamp. See `references/index-template.md` for format.
+Update `wiki/index.md` for every touched page. Append to `wiki/log.md`:
 
-Append to `wiki/log.md`:
-
-```
-## [YYYY-MM-DD] ingest | <primary article title>
-- Updated: <cascade-updated article title>
-- Updated: <another cascade-updated article title>
+```md
+## [YYYY-MM-DD] ingest | <primary page title>
+- Raw: <raw file path>
+- Updated: <cascade-updated page title>
 ```
 
 Omit `- Updated:` lines when no cascade updates occur.
@@ -100,79 +249,73 @@ Omit `- Updated:` lines when no cascade updates occur.
 
 ## Query
 
-Search the wiki and answer questions. Examples of triggers:
-- "What do I know about X?"
-- "Summarize everything related to Y"
-- "Compare A and B based on my wiki"
+Search the wiki and answer questions using the compiled knowledge base.
 
 ### Steps
 
-1. Read `wiki/index.md` to locate relevant articles.
-2. Read those articles and synthesize an answer.
-3. Prefer wiki content over your own training knowledge. Cite sources with markdown links: `[Article Title](wiki/topic/article.md)` (project-root-relative paths for in-conversation citations; within wiki/ files, use paths relative to the current file).
-4. Output the answer in the conversation. Do not write files unless asked.
+1. Read `wiki/index.md` to locate relevant pages.
+2. Read the relevant wiki pages and, when needed, linked raw sources.
+3. Prefer wiki content over training knowledge.
+4. When answering technical questions, include version/applicability scope when it affects correctness.
+5. Cite wiki pages with project-root-relative markdown links in conversation.
+6. Do not write files unless the user asks to archive or update the wiki.
 
 ### Archiving
 
-When the user explicitly asks to archive or save the answer to the wiki:
+When the user explicitly asks to archive or save an answer:
 
-1. Write the answer as a new wiki page. See `references/archive-template.md`. When converting conversation citations to the archive page, rewrite project-root-relative paths (e.g., `wiki/topic/article.md`) to file-relative paths (e.g., `../topic/article.md` or `article.md` for same-directory).
-   - Sources: markdown links to the wiki articles cited in the answer.
-   - No Raw field (content does not come from raw/).
-   - File name reflects the query topic, e.g., `transformer-architectures-overview.md`.
-   - Place in the most relevant topic directory.
-2. Always create a new page. Never merge into existing articles (archive content is a synthesized answer, not raw material).
-3. Update `wiki/index.md`. Prefix the Summary with `[Archived]`.
-4. Append to `wiki/log.md`:
-   ```
-   ## [YYYY-MM-DD] query | Archived: <page title>
-   ```
+1. Write a new `type: archive` wiki page using `references/archive-template.md`.
+2. Store it under the most relevant domain or `wiki/archive/`.
+3. Use Obsidian wikilinks for cited wiki pages.
+4. Do not include a Raw field unless the answer directly cites raw sources.
+5. Update `wiki/index.md`.
+6. Append to `wiki/log.md`:
+
+```md
+## [YYYY-MM-DD] query | Archived: <page title>
+```
 
 ---
 
 ## Lint
 
-Quality checks on the wiki. Two categories with different authority levels.
+Quality checks keep the wiki useful for chip engineering work.
 
-### Deterministic Checks (auto-fix)
+### Deterministic Checks (auto-fix when safe)
 
-Fix these automatically:
+**Index consistency** — compare `wiki/index.md` against actual wiki files:
+- File exists but missing from index → add an entry with `(no summary)` placeholder.
+- Index entry points to nonexistent file → mark as `[MISSING]`; do not delete.
 
-**Index consistency** — compare `wiki/index.md` against actual wiki/ files (excluding index.md and log.md):
-- File exists but missing from index → add entry with `(no summary)` placeholder. For Updated, use the article's metadata Updated date if present; otherwise fall back to file's last modified date.
-- Index entry points to nonexistent file → mark as `[MISSING]` in the index. Do not delete the entry; let the user decide.
+**Wikilinks** — for every `[[...]]` in wiki pages:
+- Target does not exist → search wiki for a matching title or alias.
+- Exactly one match → fix the title/alias if safe.
+- Zero or multiple matches → report to the user.
 
-**Internal links** — for every markdown link in wiki/ article files (body text and Sources metadata), excluding Raw field links (validated by Raw references below) and excluding index.md/log.md (handled above):
-- Target does not exist → search wiki/ for a file with the same name elsewhere.
-  - Exactly one match → fix the path.
-  - Zero or multiple matches → report to the user.
+**Raw references** — every markdown link to `raw/` must point to an existing flat raw file:
+- Target does not exist → search `raw/` by file name.
+- Exactly one match → fix the relative path.
+- Zero or multiple matches → report to the user.
 
-**Raw references** — every link in a Raw field must point to an existing raw/ file:
-- Target does not exist → search raw/ for a file with the same name elsewhere.
-  - Exactly one match → fix the path.
-  - Zero or multiple matches → report to the user.
+**Required frontmatter** — every wiki page must include the required metadata fields. Add missing fields with conservative values when safe.
 
-**See Also** — within each topic directory:
-- Add obviously missing cross-references between related articles.
-- Remove links to deleted files.
+### Heuristic Checks (report unless asked to fix)
 
-### Heuristic Checks (report only)
-
-These rely on your judgment. Report findings without auto-fixing:
-
-- Factual contradictions across articles
-- Outdated claims superseded by newer sources
-- Missing conflict annotations where sources disagree
-- Orphan pages with no inbound links from other wiki articles
-- Missing cross-topic references
-- Concepts frequently mentioned but lacking a dedicated page
-- Archive pages whose cited source articles have been substantially updated since archival
+- Version-specific technical claims missing `version` or `applies_to`
+- Protocol/spec behavior copied to a family page without version scope
+- English terminology with inconsistent Chinese translation
+- Conflicting claims across pages without authority/version annotation
+- Outdated claims superseded by newer specs or source material
+- Important concepts mentioned repeatedly but missing dedicated pages
+- Orphan pages without inbound wikilinks
+- Missing cross-domain references
+- Archive pages whose cited wiki pages changed materially after archival
 
 ### Post-Lint
 
 Append to `wiki/log.md`:
 
-```
+```md
 ## [YYYY-MM-DD] lint | <N> issues found, <M> auto-fixed
 ```
 
@@ -180,8 +323,11 @@ Append to `wiki/log.md`:
 
 ## Conventions
 
-- Standard markdown with relative links throughout.
-- wiki/ supports one level of topic subdirectories only. No deeper nesting.
-- Today's date for log entries, Collected dates, and Archived dates. Updated dates reflect when the article's knowledge content last changed. Published dates come from the source (use `Unknown` when unavailable).
-- Inside wiki/ files, all markdown links use paths relative to the current file. In conversation output, use project-root-relative paths (e.g., `wiki/topic/article.md`).
-- Ingest updates both `wiki/index.md` and `wiki/log.md`. Archive (from Query) updates both. Lint updates `wiki/log.md` (and `wiki/index.md` only when auto-fixing index entries). Plain queries do not write any files.
+- Use standard markdown plus Obsidian wikilinks.
+- Deep `wiki/` directories are allowed when they improve domain navigation.
+- Keep `raw/` flat; do not create raw topic subdirectories.
+- File names use kebab-case English slugs when practical.
+- Today's date is used for `created`, `updated`, log entries, and archived dates.
+- Published dates come from the source; use `Unknown` when unavailable.
+- Wiki pages are maintained synthesis; raw files are source evidence.
+- Ingest, archive, and lint operations update `wiki/log.md`; ingest and archive also update `wiki/index.md`.
