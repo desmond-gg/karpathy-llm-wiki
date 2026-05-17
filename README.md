@@ -121,6 +121,10 @@ tags:
 - `archive-template.md` — 查询归档模板
 - `workflow-checklist.md` — ingest/query/archive/lint 操作检查清单
 
+## Examples
+
+标准样例位于 [examples/chip-vault/](examples/chip-vault/)，展示 raw 扁平目录、wiki 深层目录、spec family/version、术语页、索引和日志如何组成一个最小闭环。
+
 ## Pending Work
 
 URL ingest 的 Chrome + Obsidian Web Clipper 自动化流程仍需单独设计，已记录在 [todo.md](todo.md)。
