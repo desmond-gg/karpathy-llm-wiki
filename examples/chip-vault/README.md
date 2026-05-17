@@ -10,6 +10,7 @@ It demonstrates:
 - Markdown relative links from wiki pages back to raw sources.
 - Spec family + spec version modeling.
 - Dedicated glossary pages for bilingual terminology.
+- Query answer archival as a point-in-time wiki page.
 - `wiki/index.md` and `wiki/log.md` maintenance.
 
 The technical content is intentionally small and illustrative. It is not a replacement for official PCIe specifications.
@@ -23,5 +24,6 @@ The technical content is intentionally small and illustrative. It is not a repla
 | `wiki/specs/pcie/pcie-5.0.md` | Spec version page |
 | `wiki/protocols/pcie/no-snoop.md` | Protocol concept page |
 | `wiki/glossary/no-snoop.md` | Bilingual glossary page |
+| `wiki/archive/pcie-no-snoop-cache-coherency.md` | Archived query answer example |
 | `wiki/index.md` | Global wiki index |
 | `wiki/log.md` | Append-only operation log |

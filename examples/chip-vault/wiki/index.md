@@ -24,3 +24,11 @@ Bilingual terminology normalization.
 | Page | Type | Applies To / Version | Summary | Updated |
 |------|------|----------------------|---------|---------|
 | [[No Snoop]] | glossary | PCIe 5.0 | Preferred English term and Chinese explanation | 2026-05-17 |
+
+## archive
+
+Point-in-time query answers saved for later reference.
+
+| Page | Type | Applies To / Version | Summary | Updated |
+|------|------|----------------------|---------|---------|
+| [[PCIe No Snoop and CPU Cache Coherency]] | archive | PCIe 5.0; CPU cache subsystem | [Archived] No Snoop coherency impact answer | 2026-05-17 |

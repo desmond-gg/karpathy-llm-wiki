@@ -6,3 +6,5 @@
 - Updated: [[PCIe 5.0]]
 - Updated: [[PCIe No Snoop]]
 - Updated: [[No Snoop]]
+
+## [2026-05-17] query | Archived: PCIe No Snoop and CPU Cache Coherency

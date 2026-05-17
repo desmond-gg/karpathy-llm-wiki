@@ -56,6 +56,8 @@ Before finishing an ingest or archive:
 
 ## Query Answer Contract
 
+Use `references/query-archive-guide.md` for detailed answer shape and archive criteria.
+
 For wiki-backed answers:
 
 - Start from `wiki/index.md`, then read relevant wiki pages and raw sources only when needed.

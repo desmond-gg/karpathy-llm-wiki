@@ -59,6 +59,7 @@ Template selection:
 
 Workflow reference:
 - For non-trivial ingest, query, archive, or lint operations, read `references/workflow-checklist.md` before editing. It defines planning gates, page selection, claim handling, and completion checks.
+- For wiki-backed query answers and archive decisions, read `references/query-archive-guide.md`.
 - For lint passes, also read `references/lint-rules.md`. It defines severity, deterministic checks, heuristic checks, and report format.
 
 ### Initialization
@@ -327,6 +328,8 @@ Omit `- Updated:` lines when no cascade updates occur.
 ## Query
 
 Search the wiki and answer questions using the compiled knowledge base.
+
+Use `references/query-archive-guide.md` for answer shape, archive criteria, and archive cascade rules.
 
 ### Steps
 
