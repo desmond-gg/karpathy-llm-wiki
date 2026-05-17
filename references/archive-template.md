@@ -2,7 +2,7 @@
 title: "{Title}"
 type: "archive"
 domain:
-  - "{architecture | microarchitecture | specs | protocols | ip | gpu | memory-system | verification | glossary}"
+  - "{cpu | gpu | dpu | tpu | architecture | microarchitecture | frontend-design | backend-design | dft | physical-design | specs | protocols | ip | memory-system | verification | glossary}"
 tags:
   - "wiki"
   - "archive"
