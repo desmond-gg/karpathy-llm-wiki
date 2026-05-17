@@ -25,8 +25,21 @@ your-vault/
 │   │   ├── dpu/
 │   │   └── tpu/
 │   ├── frontend-design/
+│   │   ├── rtl/
+│   │   ├── cdc-rdc/
+│   │   ├── low-power/
+│   │   └── register-interface/
 │   ├── backend-design/
+│   │   ├── synthesis/
+│   │   ├── floorplan/
+│   │   ├── pnr/
+│   │   ├── sta/
+│   │   ├── cts/
+│   │   ├── ir-em/
+│   │   └── eco/
 │   ├── dft/
+│   │   ├── scan-atpg/
+│   │   └── mbist-lbist/
 │   ├── microarchitecture/
 │   ├── specs/
 │   │   └── amba-chi/
@@ -51,8 +64,15 @@ your-vault/
 - raw/source 引用使用 markdown 相对路径，保证溯源文件明确。
 - wiki 页面使用完整 Dataview frontmatter，包括 `type`、`domain`、`version`、`applies_to`、`source_authority`、`source_language`、`updated` 等字段。
 - `domain` 支持 `cpu`、`gpu`、`dpu`、`tpu`、`frontend-design`、`backend-design`、`dft`、`physical-design` 等维度，便于按工程职责和业务对象过滤。
+- `type` 表达页面意图，例如 `spec-family`、`spec-version`、`ip-block`、`interface`、`register-model`、`frontend-note`、`backend-note`、`dft-note`、`timing-note`。
+- `applies_to` 使用受控短语表达适用范围，例如 `ARMv9-A`、`x86-64`、`PCIe 5.0`、`AMBA CHI Issue E`、`AMD Zen`。
+- `tags` 只作辅助，保留 `wiki`、`raw`、`archive` 等结构标签，不重复承担 `domain/type/applies_to` 的分类职责。
 - 英文资料中的关键定义、规范语句和 `shall/must/may` 类约束可保留短句原文，并紧跟中文说明。
 - 统一维护术语表，避免同一英文术语出现多个中文译法。
+
+## Schema 治理
+
+`SKILL.md` 是 schema 单一事实源。Agent 不应在 ingest、query、archive 或 lint 过程中临时新增 `domain` 或 `type`；如果现有枚举无法表达新的芯片设计类别，需要先报告缺口，再通过一次 schema 更新同步修改规范、模板和 README。
 
 ## Spec 版本模型
 
