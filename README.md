@@ -119,6 +119,13 @@ tags:
 - `glossary-template.md` — 中英术语表页面模板
 - `index-template.md` — 全局索引模板
 - `archive-template.md` — 查询归档模板
+- `workflow-checklist.md` — ingest/query/archive/lint 操作检查清单
+- `query-archive-guide.md` — wiki-backed query 回答格式和 archive 沉淀规则
+- `lint-rules.md` — lint 严重级别、检查项、自动修复边界和报告格式
+
+## Examples
+
+标准样例位于 [examples/chip-vault/](examples/chip-vault/)，展示 raw 扁平目录、wiki 深层目录、spec family/version、术语页、索引和日志如何组成一个最小闭环。
 
 ## Pending Work
 

@@ -10,6 +10,7 @@ This directory contains real files from a knowledge base maintained with `karpat
 | `2026-03-19-claude-code-statusline-landscape.md` | Raw source material before compilation |
 | `ai-coding-tools-index.md` | Topic index with one-line summaries |
 | `log-sample.md` | Sample entries from operation log |
+| `chip-vault/` | Minimal chip Obsidian vault demonstrating raw/wiki/spec/glossary/archive/index/log structure |
 
 ## Raw vs Compiled Comparison
 
