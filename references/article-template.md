@@ -1,6 +1,6 @@
 ---
 title: "{Title}"
-type: "{concept | spec-family | spec-version | protocol | ip | architecture | microarchitecture | gpu | glossary | comparison | design-note}"
+type: "{concept | architecture | microarchitecture | spec-family | spec-version | protocol | ip-block | interface | register-model | frontend-note | backend-note | dft-note | timing-note | physical-design-note | verification-note | comparison | design-note | glossary}"
 domain:
   - "{cpu | gpu | dpu | tpu | architecture | microarchitecture | frontend-design | backend-design | dft | physical-design | specs | protocols | ip | memory-system | verification | glossary}"
 tags:
