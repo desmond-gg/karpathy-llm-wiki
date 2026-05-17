@@ -114,6 +114,9 @@ tags:
 
 - `raw-template.md` — raw 原始资料模板
 - `article-template.md` — wiki 知识页模板
+- `spec-family-template.md` — 协议/spec family 页面模板
+- `spec-version-template.md` — 协议/spec version 页面模板
+- `glossary-template.md` — 中英术语表页面模板
 - `index-template.md` — 全局索引模板
 - `archive-template.md` — 查询归档模板
 
