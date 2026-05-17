@@ -119,6 +119,7 @@ tags:
 - `glossary-template.md` — 中英术语表页面模板
 - `index-template.md` — 全局索引模板
 - `archive-template.md` — 查询归档模板
+- `workflow-checklist.md` — ingest/query/archive/lint 操作检查清单
 
 ## Pending Work
 

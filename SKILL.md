@@ -57,6 +57,9 @@ Template selection:
 - Archived query pages → use `references/archive-template.md`.
 - Raw source files created by the agent → use `references/raw-template.md`.
 
+Workflow reference:
+- For non-trivial ingest, query, archive, or lint operations, read `references/workflow-checklist.md` before editing. It defines planning gates, page selection, claim handling, and completion checks.
+
 ### Initialization
 
 Triggers only on the first Ingest. Check whether `raw/` and `wiki/` exist. Create only what is missing; never overwrite existing files:
@@ -180,6 +183,8 @@ If the source published date is unknown, use `published: Unknown`. `created` is 
 
 Fetch or locate a source in `raw/`, then compile it into `wiki/`. Ingesting a source usually affects multiple wiki pages.
 
+For non-trivial sources, complete the planning gate in `references/workflow-checklist.md` before editing wiki pages. Identify source language, source authority, primary domains, page type, version scope, applicability scope, and candidate glossary terms up front.
+
 ### Fetch or Locate Raw Source
 
 1. If the user provides an existing raw note, read it from `raw/`.
@@ -201,6 +206,8 @@ Determine where the source belongs:
 - **Specific spec version** → Create or update a `spec-version` page under the family directory.
 - **Cross-domain material** → Place the primary page in the strongest domain and add wikilinks to related pages elsewhere.
 
+Use the smallest useful page set. Do not create placeholder pages unless they carry useful structure or unblock a necessary wikilink.
+
 Suggested directory anchors:
 - CPU architecture: `wiki/architecture/cpu/arm/`, `wiki/architecture/cpu/x86/`
 - GPU architecture: `wiki/architecture/gpu/`
@@ -216,6 +223,8 @@ Suggested directory anchors:
 - Glossary: `wiki/glossary/`
 
 When merging, check for factual conflicts. If sources disagree, annotate the disagreement with source authority, date, version, and applicability.
+
+Prefer official specs and vendor documentation over blogs or forums when resolving conflicts. Blogs and forums can preserve implementation observations, but they should not override normative spec language without explicit evidence.
 
 ### Spec and Protocol Versions
 
@@ -327,6 +336,12 @@ Search the wiki and answer questions using the compiled knowledge base.
 5. Cite wiki pages with project-root-relative markdown links in conversation.
 6. Do not write files unless the user asks to archive or update the wiki.
 
+Answer contract:
+- State the applicable architecture, protocol, spec version, IP, or product scope first when it affects correctness.
+- Use wiki pages as the primary source and raw files only for provenance checks or missing details.
+- Mark source gaps clearly instead of filling them with unsourced assumptions.
+- Keep reusable synthesis eligible for archive when the user asks to save it.
+
 ### Archiving
 
 When the user explicitly asks to archive or save an answer:
@@ -390,6 +405,8 @@ Append to `wiki/log.md`:
 ```md
 ## [YYYY-MM-DD] lint | <N> issues found, <M> auto-fixed
 ```
+
+Lint reports should separate auto-fixed deterministic issues from heuristic findings that need review. Include schema migration candidates, broken or ambiguous wikilinks, missing raw references, version-scope risks, terminology conflicts, and suggested follow-up sources or pages.
 
 ---
 
