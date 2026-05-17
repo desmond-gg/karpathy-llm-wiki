@@ -47,7 +47,15 @@ Three layers live under the user's project root:
 
 **SKILL.md** — Schema layer. Defines structure, metadata, and workflows.
 
-Templates live in `references/` relative to this file. Read them when the exact raw, article, archive, or index format is needed.
+Templates live in `references/` relative to this file. Read them when the exact raw, article, archive, index, spec, or glossary format is needed.
+
+Template selection:
+- `type: spec-family` → use `references/spec-family-template.md`.
+- `type: spec-version` → use `references/spec-version-template.md`.
+- `type: glossary` → use `references/glossary-template.md`.
+- Other wiki knowledge pages → use `references/article-template.md`.
+- Archived query pages → use `references/archive-template.md`.
+- Raw source files created by the agent → use `references/raw-template.md`.
 
 ### Initialization
 
@@ -221,10 +229,23 @@ Example:
 - `wiki/specs/amba-chi/issue-e.md` — AMBA CHI Issue E behavior, definitions, constraints, and differences.
 
 Rules:
+- Use `references/spec-family-template.md` for family pages.
+- Use `references/spec-version-template.md` for version pages.
 - A version-specific claim must state its `version` and `applies_to` scope.
 - The family page summarizes stable concepts and version differences; it must not hide version-dependent behavior.
 - When adding a new version page, update the family page's version matrix and cross-links.
 - Use `supersedes` and `superseded_by` when the relationship is known.
+
+### Glossary Pages
+
+Use `references/glossary-template.md` for dedicated terminology pages under `wiki/glossary/`.
+
+Rules:
+- The page title should be the preferred English term unless the Chinese term is the primary industry usage.
+- Put the preferred Chinese translation in `aliases` and in the Translation table.
+- Note rejected or ambiguous translations in Usage Notes when they are likely to cause confusion.
+- Link related concepts and spec-version pages with Obsidian wikilinks.
+- If a term has different meanings across specs or versions, state the scope and link the relevant version pages.
 
 ### English Original + Chinese Explanation
 
