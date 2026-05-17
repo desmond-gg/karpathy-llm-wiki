@@ -120,6 +120,7 @@ tags:
 - `index-template.md` — 全局索引模板
 - `archive-template.md` — 查询归档模板
 - `workflow-checklist.md` — ingest/query/archive/lint 操作检查清单
+- `lint-rules.md` — lint 严重级别、检查项、自动修复边界和报告格式
 
 ## Examples
 

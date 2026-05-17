@@ -59,6 +59,7 @@ Template selection:
 
 Workflow reference:
 - For non-trivial ingest, query, archive, or lint operations, read `references/workflow-checklist.md` before editing. It defines planning gates, page selection, claim handling, and completion checks.
+- For lint passes, also read `references/lint-rules.md`. It defines severity, deterministic checks, heuristic checks, and report format.
 
 ### Initialization
 
@@ -362,6 +363,8 @@ When the user explicitly asks to archive or save an answer:
 ## Lint
 
 Quality checks keep the wiki useful for chip engineering work.
+
+Use `references/lint-rules.md` as the detailed rule source for severity, fix/report boundaries, and report format. This section summarizes the required checks.
 
 ### Deterministic Checks (auto-fix when safe)
 

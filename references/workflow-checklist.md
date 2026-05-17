@@ -66,6 +66,8 @@ For wiki-backed answers:
 
 ## Lint Report Contract
 
+Use `references/lint-rules.md` for detailed severity, deterministic checks, heuristic checks, and report format.
+
 For lint operations, report:
 
 - Auto-fixed deterministic issues.
