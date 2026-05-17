@@ -1,132 +1,125 @@
-# karpathy-llm-wiki
+# chip-obsidian-wiki
 
-**A reusable skill for building Karpathy-style LLM wikis with Claude Code, Cursor, Codex, and other Agent Skills tools.**
+面向数字芯片前端设计、数字芯片后端设计、CPU/GPU/DPU/TPU 架构、ARM/x86/AMD 相关 IP、协议/spec、系统工程和验证场景的 Obsidian 知识库 Agent Skill。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/Astro-Han/karpathy-llm-wiki?style=social)](https://github.com/Astro-Han/karpathy-llm-wiki)
-[![GitHub forks](https://img.shields.io/github/forks/Astro-Han/karpathy-llm-wiki?style=social)](https://github.com/Astro-Han/karpathy-llm-wiki)
-[![Agent Skills](https://img.shields.io/badge/Agent_Skills-compatible-blue)](https://agentskills.io)
-[![Install](https://img.shields.io/badge/Install-npx_add--skill-green)](https://github.com/Astro-Han/karpathy-llm-wiki#install)
+这个 skill 基于 LLM Wiki 思路：`raw/` 保存不可变原始资料，`wiki/` 保存由 agent 持续维护的专业知识页。知识页使用 Obsidian wikilink、Dataview frontmatter、版本范围和工程视角组织，适合长期维护数字前后端设计知识、协议/spec、IP、架构和实现经验。
 
-<p align="center">
-  <img src="assets/karpathy-tweet.png" alt="Karpathy's tweet about LLM Wiki" width="560">
-</p>
-
-`karpathy-llm-wiki` packages [Karpathy's LLM Wiki idea](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) into one installable [Agent Skills](https://agentskills.io) skill. Your coding agent ingests sources into `raw/`, compiles durable knowledge pages into `wiki/`, answers questions with citations, and lints the wiki for consistency.
-
-## What Is an LLM Wiki?
-
-An **LLM wiki** is a knowledge system where the LLM maintains structured wiki pages instead of re-searching raw documents on every question. New sources are compiled into durable markdown pages, cross-references are updated over time, and answers cite the wiki pages that already contain the synthesized knowledge.
-
-This skill gives you three operations:
+## 核心能力
 
 | Operation | What it does | Output |
 |-----------|--------------|--------|
-| **Ingest** | Collects a source into `raw/` and compiles it into the wiki | New or updated wiki pages |
-| **Query** | Searches the wiki and answers with citations | Grounded answers linking to markdown pages |
-| **Lint** | Checks index integrity, links, and wiki health | Auto-fixes plus reported issues |
+| Ingest | 将 raw 资料编译进专业 wiki，并级联更新相关页面 | 新增或更新 wiki 页面、索引、日志 |
+| Query | 基于 wiki 回答芯片工程问题 | 带引用和版本范围的回答 |
+| Lint | 检查索引、wikilink、raw 引用、frontmatter、版本范围和术语一致性 | 自动修复安全项并报告风险 |
 
-See [SKILL.md](SKILL.md) for the full skill specification.
-
-## LLM Wiki vs RAG
-
-| Approach | Knowledge lives in | When synthesis happens | Good for |
-|----------|--------------------|------------------------|----------|
-| **RAG** | Raw chunks and embeddings | At query time | Broad retrieval across large corpora |
-| **LLM Wiki** | Curated markdown pages | During ingest and maintenance | Compounding knowledge, summaries, and durable cross-links |
-
-This skill is optimized for the wiki model: knowledge that improves over time instead of re-deriving relationships on every query.
-
-## Usage Stats
-
-Based on a production knowledge base maintained daily since April 2026:
-
-- **94** wiki articles across **13** topic directories
-- **99** source materials ingested
-- **87** operation log entries in the last 7 days
-
-See [examples/](examples/) for sample wiki pages, source files, and operation logs.
-
-## Install
-
-```bash
-npx add-skill Astro-Han/karpathy-llm-wiki
-```
-
-Works with any tool that supports the [Agent Skills](https://agentskills.io) standard.
-
-## Quick Start
-
-### 1. Ingest your first source
-
-Give the skill a URL, a file, or pasted text:
-
-> "Ingest this article: https://example.com/attention-is-all-you-need"
-
-The skill stores the source in `raw/`, then compiles or updates the right knowledge pages in `wiki/`.
-
-### 2. Ask your wiki a question
-
-> "What do I know about attention mechanisms?"
-
-The skill searches the wiki and answers with citations linking back to your markdown pages.
-
-### 3. Keep the wiki healthy
-
-> "Lint my wiki"
-
-Checks for broken links, missing index entries, stale cross-references, and related issues.
-
-## How the Workflow Works
-
-The core idea from Karpathy: the LLM maintains the wiki while the human focuses on choosing sources and asking good questions.
+## 目录模型
 
 ```text
-your-project/
-├── raw/            ← Immutable source material
-│   └── topic/
-│       └── 2026-04-03-source-article.md
-├── wiki/           ← Compiled knowledge pages maintained by the LLM
-│   ├── topic/
-│   │   └── concept-name.md
-│   ├── index.md    ← Global table of contents
-│   └── log.md      ← Append-only operation log
+your-vault/
+├── raw/                  # 扁平目录，保存原始资料和 Web Clipper 笔记
+│   └── 2026-04-09-pcie-no-snoop.md
+├── wiki/                 # Agent 维护的知识库
+│   ├── architecture/
+│   │   ├── cpu/arm/
+│   │   ├── cpu/x86/
+│   │   ├── dpu/
+│   │   └── tpu/
+│   ├── frontend-design/
+│   │   ├── rtl/
+│   │   ├── cdc-rdc/
+│   │   ├── low-power/
+│   │   └── register-interface/
+│   ├── backend-design/
+│   │   ├── synthesis/
+│   │   ├── floorplan/
+│   │   ├── pnr/
+│   │   ├── sta/
+│   │   ├── cts/
+│   │   ├── ir-em/
+│   │   └── eco/
+│   ├── dft/
+│   │   ├── scan-atpg/
+│   │   └── mbist-lbist/
+│   ├── microarchitecture/
+│   ├── specs/
+│   │   └── amba-chi/
+│   │       ├── index.md  # spec family page
+│   │       └── issue-e.md
+│   ├── protocols/
+│   ├── ip/
+│   ├── gpu/
+│   ├── memory-system/
+│   ├── verification/
+│   ├── glossary/
+│   ├── index.md
+│   └── log.md
+└── SKILL.md
 ```
 
-Each new source can update multiple pages, strengthen cross-references, and record contradictions. That is what makes the wiki compound over time.
+`raw/` 不按 topic 分目录。`wiki/` 允许深层目录，以领域导航为主。
 
-## Tool Compatibility
+## Obsidian 约定
 
-This skill follows the [agentskills.io](https://agentskills.io) open standard:
+- wiki 内部知识页使用 `[[wikilink]]`。
+- raw/source 引用使用 markdown 相对路径，保证溯源文件明确。
+- wiki 页面使用完整 Dataview frontmatter，包括 `type`、`domain`、`version`、`applies_to`、`source_authority`、`source_language`、`updated` 等字段。
+- `domain` 支持 `cpu`、`gpu`、`dpu`、`tpu`、`frontend-design`、`backend-design`、`dft`、`physical-design` 等维度，便于按工程职责和业务对象过滤。
+- `type` 表达页面意图，例如 `spec-family`、`spec-version`、`ip-block`、`interface`、`register-model`、`frontend-note`、`backend-note`、`dft-note`、`timing-note`。
+- `applies_to` 使用受控短语表达适用范围，例如 `ARMv9-A`、`x86-64`、`PCIe 5.0`、`AMBA CHI Issue E`、`AMD Zen`。
+- `tags` 只作辅助，保留 `wiki`、`raw`、`archive` 等结构标签，不重复承担 `domain/type/applies_to` 的分类职责。
+- 英文资料中的关键定义、规范语句和 `shall/must/may` 类约束可保留短句原文，并紧跟中文说明。
+- 统一维护术语表，避免同一英文术语出现多个中文译法。
 
-| Tool | Install method |
-|------|----------------|
-| Claude Code | `npx add-skill Astro-Han/karpathy-llm-wiki` |
-| Cursor | `npx add-skill Astro-Han/karpathy-llm-wiki` |
-| Codex CLI | Copy to `.agents/skills/karpathy-llm-wiki/` |
-| OpenCode | `npx add-skill Astro-Han/karpathy-llm-wiki` |
-| Other tools | Copy `SKILL.md` and `references/` into the tool's skill directory |
+## Schema 治理
 
-## FAQ
+`SKILL.md` 是 schema 单一事实源。Agent 不应在 ingest、query、archive 或 lint 过程中临时新增 `domain` 或 `type`；如果现有枚举无法表达新的芯片设计类别，需要先报告缺口，再通过一次 schema 更新同步修改规范、模板和 README。
 
-### What is the difference between an LLM wiki and a personal wiki?
+## Spec 版本模型
 
-An LLM wiki is maintained by the model. It updates summaries, cross-links, index entries, and contradictions as new material arrives. A normal personal wiki depends on manual editing.
+协议和 spec 使用 family + version 页面：
 
-### What sources can I ingest?
+- Family page: `wiki/specs/<spec-family>/index.md`
+- Version page: `wiki/specs/<spec-family>/<version-slug>.md`
 
-Web pages, papers, blog posts, PDFs, markdown files, text files, and pasted text. The skill converts everything into markdown under `raw/` and compiles it into `wiki/`.
+例如：
 
-### Is this production-ready?
+- `wiki/specs/amba-chi/index.md`
+- `wiki/specs/amba-chi/issue-e.md`
 
-The workflow is based on a real knowledge base with 94 articles and 99 sources maintained daily since April 2026. The repo includes examples, templates, and a design spec.
+所有版本相关 claim 都必须标明适用版本或 `applies_to` 范围，避免把某个版本的行为误写成全局事实。
 
-## Inspired By
+## Raw 属性模板
 
-Unofficial community implementation of the workflow from [Karpathy's LLM Wiki idea](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). The value here is the reusable workflow, prompt structure, and battle-tested knowledge-compilation rules.
+Agent 创建 raw URL 笔记时使用 Obsidian 属性格式：
 
-See also: [lucasastorian/llmwiki](https://github.com/lucasastorian/llmwiki), [atomicmemory/llm-wiki-compiler](https://github.com/atomicmemory/llm-wiki-compiler).
+```yaml
+---
+title: "【101】PCIe No Snoop、TLP TPH和intel DDIO"
+source: "https://blog.csdn.net/linjiasen/article/details/144769127"
+author:
+  - "[[linjiasen]]"
+published: 2024-12-27
+created: 2026-04-09
+description: ""
+tags:
+  - "raw"
+---
+```
 
-## License
+用户也可以通过 Obsidian Web Clipper 手动保存 raw 文章，只要保持同一属性结构即可。
 
-[MIT](LICENSE)
+## Templates
+
+完整规范见 [SKILL.md](SKILL.md)。模板位于 [references/](references/)：
+
+- `raw-template.md` — raw 原始资料模板
+- `article-template.md` — wiki 知识页模板
+- `spec-family-template.md` — 协议/spec family 页面模板
+- `spec-version-template.md` — 协议/spec version 页面模板
+- `glossary-template.md` — 中英术语表页面模板
+- `index-template.md` — 全局索引模板
+- `archive-template.md` — 查询归档模板
+
+## Pending Work
+
+URL ingest 的 Chrome + Obsidian Web Clipper 自动化流程仍需单独设计，已记录在 [todo.md](todo.md)。
