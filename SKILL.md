@@ -72,7 +72,7 @@ Required fields:
 ```yaml
 ---
 title: "{Page Title}"
-type: "concept | spec-family | spec-version | protocol | ip | architecture | microarchitecture | gpu | glossary | comparison | design-note | archive"
+type: "concept | architecture | microarchitecture | spec-family | spec-version | protocol | ip-block | interface | register-model | frontend-note | backend-note | dft-note | timing-note | physical-design-note | verification-note | comparison | design-note | glossary | archive"
 domain:
   - "cpu | gpu | dpu | tpu | architecture | microarchitecture | frontend-design | backend-design | dft | physical-design | specs | protocols | ip | memory-system | verification | glossary"
 tags:
@@ -92,6 +92,52 @@ updated: YYYY-MM-DD
 ```
 
 Use empty arrays or `not-applicable` when a field is not relevant. Do not omit required fields.
+
+### Schema Reference
+
+`SKILL.md` is the source of truth for controlled schema values. Templates must stay consistent with this section.
+
+**domain** is a multi-value field. Use it to combine engineering responsibility, business object, and technical area:
+
+- Responsibility domains: `frontend-design`, `backend-design`, `physical-design`, `dft`, `verification`
+- Object domains: `cpu`, `gpu`, `dpu`, `tpu`, `ip`
+- Technical domains: `architecture`, `microarchitecture`, `specs`, `protocols`, `memory-system`, `glossary`
+
+Examples:
+
+```yaml
+domain:
+  - "frontend-design"
+  - "cpu"
+  - "ip"
+```
+
+**type** describes page intent. Choose exactly one:
+
+- General pages: `concept`, `comparison`, `design-note`, `archive`
+- Architecture pages: `architecture`, `microarchitecture`
+- Spec/protocol pages: `spec-family`, `spec-version`, `protocol`
+- IP/interface pages: `ip-block`, `interface`, `register-model`
+- Engineering notes: `frontend-note`, `backend-note`, `dft-note`, `timing-note`, `physical-design-note`, `verification-note`
+- Glossary pages: `glossary`
+
+**applies_to** uses controlled short phrases for applicability scope. Prefer established names and versions:
+
+- ISA / architecture: `ARMv8-A`, `ARMv9-A`, `x86-64`
+- Microarchitecture / product family: `AMD Zen`, `CPU cluster`, `GPU cache subsystem`
+- Protocol / spec: `PCIe 5.0`, `AMBA CHI Issue E`
+- IP / subsystem: `GIC`, `SMMU`, `NoC`, `L2 cache`
+
+Use `applies_to: []` only when the page is genuinely scope-independent. Do not put long prose in `applies_to`; put explanation in `Version Scope` or the relevant body section.
+
+**tags** are auxiliary. Use `wiki`, `raw`, and `archive` as structural tags, and optional state/topic tags such as `needs-review` or `draft`. Do not duplicate `domain`, `type`, or `applies_to` in `tags`.
+
+### Schema Governance
+
+- Do not invent new `domain` or `type` values during ingest, query, archive, or lint.
+- If existing values cannot express a new chip-design category, report the gap to the user first.
+- Add new enum values only through an explicit schema update that changes `SKILL.md`, affected templates, and README together.
+- When schema changes may affect existing pages, lint should report candidate pages for migration instead of silently rewriting them.
 
 Raw source files created by the agent use Obsidian properties, not the wiki schema:
 
@@ -152,9 +198,9 @@ Suggested directory anchors:
 - GPU architecture: `wiki/architecture/gpu/`
 - DPU/TPU architecture: `wiki/architecture/dpu/`, `wiki/architecture/tpu/`
 - Microarchitecture: `wiki/microarchitecture/<area>/`
-- Frontend design: `wiki/frontend-design/rtl/`, `wiki/frontend-design/clock-reset-power/`
-- Backend design: `wiki/backend-design/floorplan/`, `wiki/backend-design/timing-closure/`
-- DFT/test: `wiki/dft/`
+- Frontend design: `wiki/frontend-design/rtl/`, `wiki/frontend-design/cdc-rdc/`, `wiki/frontend-design/low-power/`, `wiki/frontend-design/register-interface/`, `wiki/frontend-design/clock-reset-power/`
+- Backend design: `wiki/backend-design/synthesis/`, `wiki/backend-design/floorplan/`, `wiki/backend-design/pnr/`, `wiki/backend-design/sta/`, `wiki/backend-design/cts/`, `wiki/backend-design/ir-em/`, `wiki/backend-design/eco/`
+- DFT/test: `wiki/dft/scan-atpg/`, `wiki/dft/mbist-lbist/`
 - Specs/protocols: `wiki/specs/<family>/` or `wiki/protocols/<protocol>/`
 - IP blocks: `wiki/ip/<vendor-or-family>/<ip-name>/`
 - Memory system: `wiki/memory-system/`
@@ -299,6 +345,10 @@ Quality checks keep the wiki useful for chip engineering work.
 
 **Required frontmatter** — every wiki page must include the required metadata fields. Add missing fields with conservative values when safe.
 
+**Schema enum consistency** — `domain` and `type` must use values from Schema Reference:
+- Unknown values in a newly edited page → replace only when the intended value is obvious.
+- Unknown values in existing pages → report as migration candidates.
+
 ### Heuristic Checks (report unless asked to fix)
 
 - Version-specific technical claims missing `version` or `applies_to`
@@ -310,6 +360,7 @@ Quality checks keep the wiki useful for chip engineering work.
 - Orphan pages without inbound wikilinks
 - Missing cross-domain references
 - Archive pages whose cited wiki pages changed materially after archival
+- New chip-design categories that may require an explicit schema update
 
 ### Post-Lint
 
